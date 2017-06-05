@@ -1,0 +1,153 @@
+package fram;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+import sql.sqlOperate;
+
+public class ApplyListener implements ActionListener
+{
+	JPanel jplDisplay;
+	JInternalFrame jifShow;
+	private JButton agree;
+	private JButton cancel;
+	int num=0,memRow=0;
+	public ApplyListener(JPanel jpl)
+	{
+		this.jplDisplay=jpl;
+	}
+	public void actionPerformed(ActionEvent e)
+	{
+		jplDisplay.removeAll();
+		jifShow = new JInternalFrame("申请处理",true,true,true);
+		jifShow.getContentPane().setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel = new JPanel();
+		jifShow.getContentPane().add(panel, BorderLayout.SOUTH);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		agree = new JButton("同意");
+		agree.setFont(new Font("幼圆", Font.PLAIN, 15));
+		panel.add(agree);
+		
+		cancel = new JButton("取消");
+		cancel.setFont(new Font("幼圆", Font.PLAIN, 15));
+		panel.add(cancel);
+		
+		final JScrollPane jspDisplay=new JScrollPane();	
+		jspDisplay.setBackground(Color.WHITE);
+		final DefaultTableModel model = new DefaultTableModel();	
+		model.setColumnIdentifiers(new Object[]{"编号","申请人学号/工号","申请教室号","使用开始时间","使用结束时间","用途","提交申请时间","申请状态"});
+		JTable rmTable=new JTable(model);	
+		rmTable.setPreferredScrollableViewportSize(new Dimension(300,200));
+		rmTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		rmTable.setFillsViewportHeight(true);
+		rmTable.setRowHeight(25);
+		jspDisplay.add(rmTable);	
+		jspDisplay.setViewportView(rmTable);
+		jifShow.getContentPane().add(jspDisplay,BorderLayout.CENTER);
+		
+		try {
+			sqlOperate operate=new sqlOperate();
+			operate.displayApply();
+			while(operate.rs.next()){
+				int id=operate.rs.getInt("Id");
+				String unum=operate.rs.getString("UserNum");
+				String cmo=operate.rs.getString("RoomCmo");
+				String btime=operate.rs.getString("BeginTime");
+				String etime=operate.rs.getString("EndTime");
+				String reason=operate.rs.getString("Reason");
+				String atime=operate.rs.getString("ApplyTime");
+				String status=operate.rs.getString("Status");
+				model.addRow(new Object[]{id,unum,cmo,btime,etime,reason,atime,status});
+				num++;
+			}
+		} catch (ClassNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		jplDisplay.add(jifShow);
+		jifShow.setVisible(true);
+			
+		rmTable.addMouseListener(new java.awt.event.MouseAdapter(){
+			public void mouseClicked(java.awt.event.MouseEvent e){
+				Point mousepoint;
+				mousepoint =e.getPoint();
+				memRow=rmTable.rowAtPoint(mousepoint);
+			}
+		});
+		
+		agree.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				int id = (int) rmTable.getValueAt(memRow, 0);
+				String state=(String) rmTable.getValueAt(memRow, 7);
+				System.out.println(state);
+				if (state.equals("等待")){
+				try {
+					sqlOperate operate=new sqlOperate();
+					operate.agree_apply(id);
+					model.setValueAt("申请成功", memRow, 7);
+					String unum=(String) rmTable.getValueAt(memRow, 1);
+					String cmo=(String) rmTable.getValueAt(memRow, 2);
+					String btime=(String) rmTable.getValueAt(memRow, 3);
+					String etime=(String) rmTable.getValueAt(memRow, 4);
+					String reason=(String) rmTable.getValueAt(memRow, 5);
+					operate.add_occupy(unum,cmo,btime,etime,reason);
+					JOptionPane.showMessageDialog(jifShow, "处理完成","Successful", 2);
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				}
+			}else{
+				JOptionPane.showMessageDialog(jifShow, "已处理,禁止重复处理","警告", 2);}
+			}
+		});
+		
+		cancel.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				int id = (int) rmTable.getValueAt(memRow, 0);
+				String state=(String) rmTable.getValueAt(memRow, 7);
+				if (state.equals("等待")){
+				try {
+					sqlOperate operate=new sqlOperate();
+					operate.cancel_apply(id);
+					model.setValueAt("申请失败", memRow, 7);
+					JOptionPane.showMessageDialog(jifShow, "处理完成","Successful", 2);
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				}
+			}else{
+				JOptionPane.showMessageDialog(jifShow, "已处理,禁止重复处理","警告", 2);
+			}}
+		});
+		
+	}
+}
