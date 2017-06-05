@@ -1,0 +1,252 @@
+package fram;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import sql.sqlOperate;
+public class AdMeListener implements ActionListener
+{
+	JPanel jplDisplay,displayUp,displayDown;
+	JInternalFrame jifShow;
+	private JTextField tname;
+	private JTextField tsex;
+	private JTextField tmobile;
+	private JTextField tidnumber;
+	private JPasswordField tnewpass;
+	private JPasswordField tsnewpass;
+	private JTextField tnumber;
+	int num=0,memRow=0;
+	String number=null,namee=null,sexx=null,mobilee=null,idnumberr=null;
+	public AdMeListener(JPanel jpl,String numb)
+	{
+		number=numb;
+		this.jplDisplay=jpl;
+	}
+	public void actionPerformed(ActionEvent e)
+	{
+		try {
+			sqlOperate operate=new sqlOperate();
+			operate.get_admin_byNumber(number);
+			while(operate.rs.next()){
+				namee=operate.rs.getString("Name");
+				sexx=operate.rs.getString("Sex");
+				mobilee=operate.rs.getString("Mobile");
+				idnumberr=operate.rs.getString("IdNumber");
+			}
+		} catch (ClassNotFoundException e2) {
+			JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+			e2.printStackTrace();
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+			e1.printStackTrace();
+		}
+		
+		jplDisplay.removeAll();
+		JInternalFrame jifShow = new JInternalFrame("个人管理",true,true,true);
+		jifShow.getContentPane().setLayout(new BorderLayout(0, 0));
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{141, 54, 66, 0};
+		gridBagLayout.rowHeights = new int[]{21, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+
+		displayUp = new JPanel();
+		jifShow.getContentPane().add(displayUp, BorderLayout.CENTER);
+		displayUp.setLayout(gridBagLayout);
+	
+		displayDown = new JPanel();
+		jifShow.getContentPane().add(displayDown, BorderLayout.SOUTH);
+		displayDown.setLayout(new BoxLayout(displayDown, BoxLayout.Y_AXIS));
+		
+		JLabel lblNewLabel = new JLabel("工号");
+		lblNewLabel.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.gridx = 0;
+		gbc_lblNewLabel.gridy = 1;
+		displayUp.add(lblNewLabel, gbc_lblNewLabel);
+		
+		tnumber = new JTextField();
+		GridBagConstraints gbc_tnumber = new GridBagConstraints();
+		gbc_tnumber.insets = new Insets(0, 0, 5, 100);
+		gbc_tnumber.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tnumber.gridx = 1;
+		gbc_tnumber.gridy = 1;
+		displayUp.add(tnumber, gbc_tnumber);
+		tnumber.setColumns(10);
+		tnumber.setText(number);
+		tnumber.setEditable(false);
+		
+		JLabel lblNewLabel_1 = new JLabel("姓名");
+		lblNewLabel_1.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
+		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_1.gridx = 0;
+		gbc_lblNewLabel_1.gridy = 2;
+		displayUp.add(lblNewLabel_1, gbc_lblNewLabel_1);
+		
+		tname = new JTextField();
+		GridBagConstraints gbc_tname = new GridBagConstraints();
+		gbc_tname.insets = new Insets(0, 0, 5, 100);
+		gbc_tname.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tname.gridx = 1;
+		gbc_tname.gridy = 2;
+		displayUp.add(tname, gbc_tname);
+		tname.setColumns(10);
+		tname.setText(namee);
+		
+		JLabel lblNewLabel_2 = new JLabel("性别（男/女）");
+		lblNewLabel_2.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_2.gridx = 0;
+		gbc_lblNewLabel_2.gridy = 3;
+		displayUp.add(lblNewLabel_2, gbc_lblNewLabel_2);
+		
+		tsex = new JTextField();
+		GridBagConstraints gbc_tsex = new GridBagConstraints();
+		gbc_tsex.insets = new Insets(0, 0, 5, 100);
+		gbc_tsex.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tsex.gridx = 1;
+		gbc_tsex.gridy = 3;
+		displayUp.add(tsex, gbc_tsex);
+		tsex.setColumns(10);
+		tsex.setText(sexx);
+		
+		JLabel label = new JLabel("联系电话");
+		label.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_label = new GridBagConstraints();
+		gbc_label.insets = new Insets(0, 0, 5, 5);
+		gbc_label.gridx = 0;
+		gbc_label.gridy = 4;
+		displayUp.add(label, gbc_label);
+		
+		tmobile = new JTextField();
+		GridBagConstraints gbc_tmobile = new GridBagConstraints();
+		gbc_tmobile.insets = new Insets(0, 0, 5, 100);
+		gbc_tmobile.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tmobile.gridx = 1;
+		gbc_tmobile.gridy = 4;
+		displayUp.add(tmobile, gbc_tmobile);
+		tmobile.setColumns(10);
+		tmobile.setText(mobilee);
+		
+		JLabel label_1 = new JLabel("身份证号");
+		label_1.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_label_1 = new GridBagConstraints();
+		gbc_label_1.insets = new Insets(0, 0, 5, 5);
+		gbc_label_1.gridx = 0;
+		gbc_label_1.gridy = 5;
+		displayUp.add(label_1, gbc_label_1);
+		
+		tidnumber = new JTextField();
+		GridBagConstraints gbc_tidnumber = new GridBagConstraints();
+		gbc_tidnumber.insets = new Insets(0, 0, 5, 100);
+		gbc_tidnumber.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tidnumber.gridx = 1;
+		gbc_tidnumber.gridy = 5;
+		displayUp.add(tidnumber, gbc_tidnumber);
+		tidnumber.setColumns(10);
+		tidnumber.setText(idnumberr);
+		
+		JButton btn_save = new JButton("保存");
+		btn_save.setFont(new Font("幼圆", Font.PLAIN, 13));
+		GridBagConstraints gbc_button = new GridBagConstraints();
+		gbc_button.insets = new Insets(10, 0, 10, 0);
+		gbc_button.gridx = 1;
+		gbc_button.gridy = 6;
+		displayUp.add(btn_save, gbc_button);
+
+		JPanel panel3=new JPanel();
+		panel3.setLayout(new FlowLayout());
+		JLabel label_3 = new JLabel("新密码");
+		label_3.setFont(new Font("幼圆", Font.PLAIN, 15));
+		tnewpass = new JPasswordField();
+		panel3.add(label_3);
+		panel3.add(tnewpass);
+		tnewpass.setColumns(10);
+		
+		JLabel label_4 = new JLabel("确认新密码");
+		label_4.setFont(new Font("幼圆", Font.PLAIN, 15));
+		tsnewpass = new JPasswordField();
+		panel3.add(label_4);
+		panel3.add(tsnewpass);
+
+		tsnewpass.setColumns(10);
+		
+		JButton btn_save1 = new JButton("保存");
+		btn_save1.setFont(new Font("幼圆", Font.PLAIN, 13));
+		panel3.add(btn_save1);
+		displayDown.add(panel3);
+		
+		jifShow.setVisible(true);
+		jplDisplay.add(jifShow);
+		
+		btn_save.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				String name=tname.getText();
+				String sex=tsex.getText();
+				String mobile=tmobile.getText();
+				String idnumber=tidnumber.getText();
+				try {
+					sqlOperate operate=new sqlOperate();
+					operate.alter_admin(number,name, sex, mobile, idnumber);
+					operate.displayRoom();
+					while(operate.rs.next()){
+						
+					}
+					JOptionPane.showMessageDialog(jifShow, "修改成功","Successful", 2);
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				}
+			}
+		});
+		btn_save1.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				String pass1=tnewpass.getText();
+				String pass2=tsnewpass.getText();
+				if(pass1.equals(pass2)){
+				try {
+					sqlOperate operate=new sqlOperate();
+					operate.alter_admin_pass(number,pass1);
+					JOptionPane.showMessageDialog(jifShow, "密码修改成功","Successful", 2);
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				}}
+				else
+					JOptionPane.showMessageDialog(jifShow, "两次输入密码不相同","警告", 2);
+			}
+		});
+	}
+}
+
