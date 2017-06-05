@@ -1,0 +1,240 @@
+package fram;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+import sql.sqlOperate;
+
+public class UserListener implements ActionListener
+{
+	JPanel jplDisplay;
+	JInternalFrame jifShow;
+	private JPanel panel_1;
+	private JLabel lblNewLabel;
+	private JLabel lblNewLabel_1;
+	private JTextField tname;
+	private JLabel lblNewLabel_3;
+	private JTextField tnumber;
+	private JButton delroom;
+	private JComboBox InsBox;
+	int num,memRow=0;
+	public UserListener(JPanel jpl)
+	{
+		this.jplDisplay=jpl;
+	}
+	public void actionPerformed(ActionEvent e)
+	{
+		jplDisplay.removeAll();
+		jifShow = new JInternalFrame("用户管理",true,true,true);
+		jifShow.getContentPane().setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel = new JPanel();
+		jifShow.getContentPane().add(panel, BorderLayout.SOUTH);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		delroom = new JButton("删除");
+		delroom.setFont(new Font("幼圆", Font.PLAIN, 15));
+		panel.add(delroom);
+		
+		panel_1 = new JPanel();
+		jifShow.getContentPane().add(panel_1, BorderLayout.EAST);
+		GridBagLayout gbl_panel_1 = new GridBagLayout();
+		gbl_panel_1.columnWidths = new int[]{54, 66, 0};
+		gbl_panel_1.rowHeights = new int[]{21, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panel_1.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		panel_1.setLayout(gbl_panel_1);
+		
+		String[] category={"","学生","教师"};
+		
+		lblNewLabel = new JLabel("学号/工号");
+		lblNewLabel.setFont(new Font("宋体", Font.PLAIN, 13));
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.gridx = 0;
+		gbc_lblNewLabel.gridy = 1;
+		panel_1.add(lblNewLabel, gbc_lblNewLabel);
+		
+		tnumber = new JTextField();
+		GridBagConstraints gbc_tCmo = new GridBagConstraints();
+		gbc_tCmo.insets = new Insets(0, 0, 5, 20);
+		gbc_tCmo.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tCmo.gridx = 1;
+		gbc_tCmo.gridy = 1;
+		panel_1.add(tnumber, gbc_tCmo);
+		tnumber.setColumns(8);
+		
+		lblNewLabel_1 = new JLabel("姓名");
+		lblNewLabel_1.setFont(new Font("宋体", Font.PLAIN, 13));
+		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
+		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_1.gridx = 0;
+		gbc_lblNewLabel_1.gridy = 2;
+		panel_1.add(lblNewLabel_1, gbc_lblNewLabel_1);
+		
+		tname = new JTextField();
+		GridBagConstraints gbc_tJxlou = new GridBagConstraints();
+		gbc_tJxlou.insets = new Insets(0, 0, 5, 20);
+		gbc_tJxlou.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tJxlou.gridx = 1;
+		gbc_tJxlou.gridy = 2;
+		panel_1.add(tname, gbc_tJxlou);
+		tname.setColumns(10);
+	
+		lblNewLabel_3 = new JLabel("类型");
+		lblNewLabel_3.setFont(new Font("宋体", Font.PLAIN, 13));
+		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_3.gridx = 0;
+		gbc_lblNewLabel_3.gridy = 4;
+		panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
+		InsBox = new JComboBox(category);
+		InsBox.setFont(new Font("宋体", Font.PLAIN, 13));
+		GridBagConstraints gbc_InsBox = new GridBagConstraints();
+		gbc_InsBox.insets = new Insets(0, 0, 5, 20);
+		gbc_InsBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_InsBox.gridx = 1;
+		gbc_InsBox.gridy = 4;
+		panel_1.add(InsBox, gbc_InsBox);
+		
+		JButton addRoom = new JButton("增加");
+		GridBagConstraints gbc_addRoom = new GridBagConstraints();
+		gbc_addRoom.insets = new Insets(20, 0, 0, 20);
+		gbc_addRoom.anchor = GridBagConstraints.EAST;
+		gbc_addRoom.weighty = 50.0;
+		gbc_addRoom.gridx = 1;
+		gbc_addRoom.gridy = 6;
+		panel_1.add(addRoom, gbc_addRoom);
+		addRoom.setFont(new Font("幼圆", Font.PLAIN, 15));
+		addRoom.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		final JScrollPane jspDisplay=new JScrollPane();	
+		jspDisplay.setBackground(Color.WHITE);
+		final DefaultTableModel model = new DefaultTableModel();	
+		model.setColumnIdentifiers(new Object[]{"编号","学号/工号","姓名","性别","联系电话","邮箱","用户类型","身份证号"});
+		JTable rmTable=new JTable(model);	
+		rmTable.setPreferredScrollableViewportSize(new Dimension(300,200));
+		rmTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		rmTable.setFillsViewportHeight(true);
+		rmTable.setRowHeight(25);
+		jspDisplay.add(rmTable);	
+		jspDisplay.setViewportView(rmTable);
+		jifShow.getContentPane().add(jspDisplay,BorderLayout.CENTER);
+		
+		num=0;
+		try {
+			sqlOperate operate=new sqlOperate();
+			operate.displayUser();
+			while(operate.rs.next()){
+				int id=operate.rs.getInt("Id");
+				String numr=operate.rs.getString("Number");
+				String name1=operate.rs.getString("Name");
+				String sex=operate.rs.getString("Sex");
+				String mobile=operate.rs.getString("Mobile");
+				String email=operate.rs.getString("Email");
+				String type=operate.rs.getString("Type");
+				String idnum=operate.rs.getString("IdNumber");
+				model.addRow(new Object[]{id,numr,name1,sex,mobile,email,type,idnum});
+				num++;
+			}
+		} catch (ClassNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		jplDisplay.add(jifShow);
+		jifShow.setVisible(true);
+		
+		addRoom.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				int i=0;
+				String name=tname.getText();
+				String number=tnumber.getText();
+				String Type=InsBox.getSelectedItem().toString();
+				if(name!=null&&number!=null&&Type!=null){
+				try {
+					sqlOperate operate=new sqlOperate();
+					operate.add_user(name, number,Type);
+					operate.displayUser();
+					while(operate.rs.next()){
+						i++;
+						int id=operate.rs.getInt("Id");
+						String numr=operate.rs.getString("Number");
+						String name1=operate.rs.getString("Name");
+						String sex=operate.rs.getString("Sex");
+						String mobile=operate.rs.getString("Mobile");
+						String email=operate.rs.getString("Email");
+						String type=operate.rs.getString("Type");
+						String idnum=operate.rs.getString("IdNumber");
+						if(i>num){
+							num++;
+							model.addRow(new Object[]{id,numr,name1,sex,mobile,email,type,idnum});
+						JOptionPane.showMessageDialog(jifShow, "增加成功","Successful", 2);
+						}
+					}
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				}
+			}else
+				JOptionPane.showMessageDialog(jifShow, "请输入数据","警告", 2);}
+
+		});
+		
+		rmTable.addMouseListener(new java.awt.event.MouseAdapter(){
+			public void mouseClicked(java.awt.event.MouseEvent e){
+				Point mousepoint;
+				mousepoint =e.getPoint();
+				memRow=rmTable.rowAtPoint(mousepoint);
+			}
+		});
+		
+		delroom.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				int id = (int) rmTable.getValueAt(memRow, 0);
+				try {
+					sqlOperate operate=new sqlOperate();
+					operate.del_user(id);
+					model.removeRow(memRow);
+					num--;
+					JOptionPane.showMessageDialog(jifShow, "删除成功","Successful", 2);
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				}
+			}
+		});
+	}
+}
