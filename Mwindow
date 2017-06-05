@@ -1,0 +1,106 @@
+package fram;
+
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Color;
+import java.awt.Point;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.ImageIcon;
+
+public class Mwindow{
+	final int MIN_WIDTH=700;
+	final int MIN_HIGHT=400;
+	Point point=new Point(0,0);	
+
+	Font f12 = new Font("Times New Roman", 0, 10);
+	Font f121 = new Font("Times New Roman", 1,12);
+	Font fbutton=new Font("宋体", 1, 16);
+
+	private JPanel pane1,pane2,pane3,panel;
+	private JLabel label_wel;
+	private JButton btn_login;
+	private JButton btn_exit;
+	private JPanel jplDisplay;
+	public static void main(String[] args)
+	{
+		new Mwindow();
+	}
+	public Mwindow()
+	{
+		this.initComponents();
+	}
+	private void initComponents()
+	{
+		final JFrame jf=new JFrame("会议室教室管理系统");
+		jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		jf.setVisible(true);
+		jf.setMinimumSize(new Dimension(MIN_WIDTH,MIN_HIGHT));
+		jf.setSize(500,400);
+		jf.setLocationRelativeTo(null);
+
+		jf.addMouseListener(new MouseListener(){
+			public void mouseClicked(MouseEvent e){}	
+			public void mouseEntered(MouseEvent e){}	
+			public void mouseExited(MouseEvent e){}		
+			public void mouseReleased(MouseEvent e){}	
+			public void mousePressed(MouseEvent e){		
+				point=e.getPoint();
+			}
+		});
+
+		label_wel = new JLabel("欢迎使用会议室教室管理系统");
+		label_wel.setFont(new Font("黑体",  Font.BOLD, 18));
+		btn_login = new JButton("登录");
+		btn_login.setFont(fbutton);
+		btn_exit = new JButton("退出");
+		btn_exit.setFont(fbutton);
+		
+		pane1 = new JPanel();
+		panel = new JPanel();
+		pane2 = new JPanel();
+		pane3 = new JPanel();
+		
+		pane1.add(label_wel);
+		pane2.add(btn_login);
+		pane3.add(btn_exit);
+		
+		panel.add(pane2,BorderLayout.WEST);
+		panel.add(pane3,BorderLayout.EAST);
+		
+		jplDisplay = new JPanel(new BorderLayout());
+		jplDisplay.add(pane1,BorderLayout.NORTH);
+		jplDisplay.add(panel, BorderLayout.SOUTH);
+		jf.getContentPane().add(jplDisplay, BorderLayout.CENTER);
+		
+		btn_login.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				jf.dispose();
+				new Login();
+			}
+		});
+		btn_exit.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				System.exit(0);
+			}
+		});
+		
+	}
+}
