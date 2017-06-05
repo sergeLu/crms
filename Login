@@ -1,0 +1,185 @@
+package fram;
+
+import java.awt.Point;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import sql.sqlOperate;
+
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.sql.SQLException;
+import java.text.Format;
+import java.awt.event.ActionEvent;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+
+
+public class Login{
+	final int MIN_WIDTH=700;
+	final int MIN_HIGHT=400;
+	private JPasswordField password;
+	private JTextField pNum;
+	Point point=new Point(0,0);
+	Font f12 = new Font("Times New Roman", 0, 10);
+	Font f121 = new Font("Times New Roman", 1,12);
+	Font fbutton=new Font("宋体", 1, 12);
+	private JPanel jplDisplay;
+	private JLabel label;
+	private JLabel label_1;
+	private JLabel label_2;
+	private JButton btn_login;
+	JPanel panel;
+
+	public static void main(String[] args) {
+		new Login();
+	}
+	public Login()
+	{
+		final JFrame jf=new JFrame("会议室教室管理系统");
+		jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		jf.setVisible(true);
+		jf.setMinimumSize(new Dimension(MIN_WIDTH,MIN_HIGHT));
+		jf.setSize(500,400);
+		jf.setLocationRelativeTo(null);
+
+		jf.addMouseListener(new MouseListener(){
+			public void mouseClicked(MouseEvent e){}	
+			public void mouseEntered(MouseEvent e){}	
+			public void mouseExited(MouseEvent e){}		
+			public void mouseReleased(MouseEvent e){}	
+			public void mousePressed(MouseEvent e){		
+				point=e.getPoint();
+			}
+		});
+		
+		String[] category={"","用户","管理员"};
+		
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{684, 0};
+		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0};
+		
+		panel = new JPanel(new GridBagLayout());
+		label = new JLabel("用户类型");
+		label.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_label = new GridBagConstraints();
+		gbc_label.anchor = GridBagConstraints.EAST;
+		gbc_label.insets = new Insets(0, 0, 5, 5);
+		gbc_label.gridx = 4;
+		gbc_label.gridy = 2;
+		panel.add(label, gbc_label);
+		final JComboBox InsBox=new JComboBox(category);
+		InsBox.setName("用户类型");
+		InsBox.setFont(new Font("幼圆", Font.PLAIN, 15));
+		
+		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
+		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
+		gbc_textField_1.gridx = 5;
+		gbc_textField_1.gridy = 2;
+		panel.add(InsBox, gbc_textField_1);
+		
+		label_1 = new JLabel("学号/工号");
+		label_1.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_label_1 = new GridBagConstraints();
+		gbc_label_1.anchor = GridBagConstraints.EAST;
+		gbc_label_1.insets = new Insets(0, 0, 5, 5);
+		gbc_label_1.gridx = 4;
+		gbc_label_1.gridy = 3;
+		panel.add(label_1, gbc_label_1);
+		
+		pNum=new JTextField();
+		GridBagConstraints gbc_textField = new GridBagConstraints();
+		gbc_textField.anchor = GridBagConstraints.WEST;
+		gbc_textField.insets = new Insets(0, 0, 5, 5);
+		gbc_textField.gridx = 5;
+		gbc_textField.gridy = 3;
+		panel.add(pNum, gbc_textField);
+		pNum.setColumns(12);
+		
+		label_2 = new JLabel("密码");
+		label_2.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_label_2 = new GridBagConstraints();
+		gbc_label_2.anchor = GridBagConstraints.EAST;
+		gbc_label_2.insets = new Insets(0, 0, 5, 5);
+		gbc_label_2.gridx = 4;
+		gbc_label_2.gridy = 4;
+		panel.add(label_2, gbc_label_2);
+		
+		password = new JPasswordField();
+		password.setColumns(12);
+		GridBagConstraints gbc_passwordField = new GridBagConstraints();
+		gbc_passwordField.anchor = GridBagConstraints.WEST;
+		gbc_passwordField.insets = new Insets(0, 0, 5, 5);
+		gbc_passwordField.gridx = 5;
+		gbc_passwordField.gridy = 4;
+		panel.add(password, gbc_passwordField);
+		
+		jplDisplay = new JPanel(new BorderLayout());
+		jplDisplay.add(panel, BorderLayout.CENTER);
+		
+		btn_login = new JButton("登录");
+		btn_login.setFont(new Font("幼圆", Font.PLAIN, 15));
+		GridBagConstraints gbc_button = new GridBagConstraints();
+		gbc_button.fill = GridBagConstraints.HORIZONTAL;
+		gbc_button.insets = new Insets(0, 0, 5, 5);
+		gbc_button.gridx = 5;
+		gbc_button.gridy = 5;
+		panel.add(btn_login, gbc_button);
+		jf.getContentPane().add(jplDisplay, BorderLayout.CENTER);
+				
+		btn_login.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				String number=pNum.getText();
+				String pass=password.getText();
+				String tableName=InsBox.getSelectedItem().toString();
+				try {
+					sqlOperate operate = new sqlOperate();
+					if(tableName.equals("管理员")){
+						operate.get_admin(number,pass);
+						if(operate.rs.next()){
+							JOptionPane.showMessageDialog(panel, "登录成功","Successful", 1);
+							jf.dispose();
+							AdmHome frame = new AdmHome(number);
+							frame.setVisible(true);
+						}
+						else{JOptionPane.showMessageDialog(panel, "登录失败","警告", 1);}
+					}
+					if(tableName.equals("用户")){
+						operate.get_user(number,pass);
+						if(operate.rs.next()){
+							JOptionPane.showMessageDialog(panel, "登录成功","Successful", 1);
+							jf.dispose();
+							UseHome frame = new UseHome(number);
+							frame.setVisible(true);
+						}
+						else{JOptionPane.showMessageDialog(panel, "登录失败","警告", 1);}
+					}
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(panel, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(panel, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				}
+			}
+		});
+	}
+}
