@@ -1,0 +1,125 @@
+package fram;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import sql.sqlOperate;
+
+public class OccupyListener implements ActionListener
+{
+	JPanel jplDisplay;
+	JInternalFrame jifShow;
+	private JLabel jtime;
+	private JTextField time;
+	private JButton forceCancel;
+	int num=0,memRow=0;
+	public OccupyListener(JPanel jpl)
+	{
+		this.jplDisplay=jpl;
+	}
+	public void actionPerformed(ActionEvent e)
+	{
+		jplDisplay.removeAll();
+		jifShow = new JInternalFrame("占用处理",true,true,true);
+		jifShow.getContentPane().setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel = new JPanel();
+		jifShow.getContentPane().add(panel, BorderLayout.SOUTH);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		jtime = new JLabel("结束时间（格式/2017-06-03 14:00）");
+		jtime.setFont(new Font("幼圆", Font.PLAIN, 12));
+		panel.add(jtime);
+		
+		time = new JTextField();
+		time.setColumns(10);
+		panel.add(time);
+		
+		forceCancel = new JButton("强制停用");
+		forceCancel.setFont(new Font("幼圆", Font.PLAIN, 13));
+		panel.add(forceCancel);
+		
+		final JScrollPane jspDisplay=new JScrollPane();	
+		jspDisplay.setBackground(Color.WHITE);
+		final DefaultTableModel model = new DefaultTableModel();	
+		model.setColumnIdentifiers(new Object[]{"编号","申请人学号/工号","申请教室号","使用开始时间","使用结束时间","用途"});
+		JTable rmTable=new JTable(model);	
+		rmTable.setPreferredScrollableViewportSize(new Dimension(300,200));
+		rmTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		rmTable.setFillsViewportHeight(true);
+		rmTable.setRowHeight(25);
+		jspDisplay.add(rmTable);	
+		jspDisplay.setViewportView(rmTable);
+		jifShow.getContentPane().add(jspDisplay,BorderLayout.CENTER);
+		
+		try {
+			sqlOperate operate=new sqlOperate();
+			operate.displayOccupy();
+			while(operate.rs.next()){
+				int id=operate.rs.getInt("Id");
+				String unum=operate.rs.getString("UserNum");
+				String cmo=operate.rs.getString("RoomCmo");
+				String btime=operate.rs.getString("BeginTime");
+				String etime=operate.rs.getString("EndTime");
+				String reason=operate.rs.getString("Reason");
+				model.addRow(new Object[]{id,unum,cmo,btime,etime,reason});
+				num++;
+			}
+		} catch (ClassNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		jplDisplay.add(jifShow);
+		jifShow.setVisible(true);
+			
+		rmTable.addMouseListener(new java.awt.event.MouseAdapter(){
+			public void mouseClicked(java.awt.event.MouseEvent e){
+				Point mousepoint;
+				mousepoint =e.getPoint();
+				memRow=rmTable.rowAtPoint(mousepoint);
+			}
+		});
+		
+		
+		forceCancel.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				int id = (int) rmTable.getValueAt(memRow, 0);
+				String ti=time.getText();
+				try {
+					sqlOperate operate=new sqlOperate();
+					operate.force_cancel_apply(id,ti);
+					model.setValueAt(ti, memRow, 4);
+					JOptionPane.showMessageDialog(jifShow, "强制结束成功","Successful", 2);
+				} catch (ClassNotFoundException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(jifShow, "数据库连接异常","警告", 2);
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+	}
+}
