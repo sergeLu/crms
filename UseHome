@@ -1,0 +1,133 @@
+package fram;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+
+public class UseHome extends JFrame{
+	final int MIN_WIDTH=700;
+	final int MIN_HIGHT=400;
+	Point point=new Point(0,0);	
+	JMenuBar myMenubar;
+	JMenu menuFile,menuEdit;
+	JMenuItem menuitemExit, menuitemAbout;
+	
+	private JPanel panel,pane2;
+	private JButton btn_2;
+	private JButton btn_3;
+	private JButton btn_4;
+	private JPanel jplDisplay;
+	String num=null;
+	Font f12 = new Font("Times New Roman", 0, 10);
+	Font f121 = new Font("Times New Roman", 1,12);
+	Font fbutton=new Font("宋体", 1, 12);
+
+	public UseHome(String number) {
+		num=number;
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+		this.setMinimumSize(new Dimension(MIN_WIDTH,MIN_HIGHT));
+		this.setSize(500,400);
+		this.setTitle("会议室教室管理系统");
+		this.setLocationRelativeTo(null);
+
+		this.addMouseListener(new MouseListener(){
+			public void mouseClicked(MouseEvent e){}	
+			public void mouseEntered(MouseEvent e){}	
+			public void mouseExited(MouseEvent e){}		
+			public void mouseReleased(MouseEvent e){}	
+			public void mousePressed(MouseEvent e){		
+				point=e.getPoint();
+			}
+		});
+		
+		menuFile=new JMenu("File");
+		menuFile.setFont(f121);
+	
+		menuitemExit=new JMenuItem("Exit");
+		menuitemExit.setFont(f12);
+		menuFile.add(menuitemExit);
+		
+		menuEdit=new JMenu("Help");
+		menuEdit.setFont(f121);
+	 
+		menuitemAbout=new JMenuItem("About...");
+		menuitemAbout.setFont(f12);
+		menuEdit.add(menuitemAbout);
+		
+		myMenubar=new JMenuBar();
+		myMenubar.add(menuFile);
+		myMenubar.add(menuEdit);
+		this.setJMenuBar(myMenubar);
+		getContentPane().setLayout(new BorderLayout(0, 0));
+		
+		
+		//��Ӱ�ť
+		panel = new JPanel(new GridBagLayout());
+		pane2 = new JPanel();
+		getContentPane().add(pane2, BorderLayout.WEST);
+		pane2.add(panel);
+		
+		btn_2 = new JButton("查询/申请");
+		btn_2.setForeground(new Color(0, 0, 255));
+		btn_2.setFont(new Font("幼圆", Font.PLAIN, 13));
+		GridBagConstraints gridBagCon02 = new GridBagConstraints();
+		gridBagCon02.ipadx = 40;
+		gridBagCon02.anchor = GridBagConstraints.WEST;
+		gridBagCon02.insets = new Insets(5, 5, 5, 5); 
+		gridBagCon02.gridx = 0;
+		gridBagCon02.gridy = 0;
+		panel.add(btn_2, gridBagCon02);
+		
+		btn_3 = new JButton("我的申请");
+		btn_3.setFont(new Font("幼圆", Font.PLAIN, 13));
+		btn_3.setForeground(new Color(0, 0, 255));
+		GridBagConstraints gridBagCon03 = new GridBagConstraints();
+		gridBagCon03.ipadx = 46;
+		gridBagCon03.anchor = GridBagConstraints.WEST;
+		gridBagCon03.insets = new Insets(5, 5, 5, 5); 
+		gridBagCon03.gridx = 0;
+		gridBagCon03.gridy = 1;
+		panel.add(btn_3, gridBagCon03);
+		
+		btn_4 = new JButton("个人中心");
+		btn_4.setForeground(new Color(0, 0, 255));
+		btn_4.setFont(new Font("幼圆", Font.PLAIN, 13));
+		GridBagConstraints gridBagCon04 = new GridBagConstraints();
+		gridBagCon04.ipadx = 46;
+		gridBagCon04.anchor = GridBagConstraints.WEST;
+		gridBagCon04.insets = new Insets(5, 5, 5, 5); 
+		gridBagCon04.gridx = 0;
+		gridBagCon04.gridy = 2;
+		panel.add(btn_4, gridBagCon04);
+		
+		jplDisplay = new JPanel(new BorderLayout());
+		getContentPane().add(jplDisplay, BorderLayout.CENTER);
+		btn_2.addActionListener(new GetRoomListener(jplDisplay,num));
+		btn_3.addActionListener(new MeApplyListener(jplDisplay,num));
+		btn_4.addActionListener(new UsMeListener(jplDisplay,num));
+		menuitemExit.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				System.exit(0);
+			}
+		});
+	}
+}
+
